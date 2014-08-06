@@ -1041,7 +1041,15 @@ namespace RobotLocalization
         try
         {
           // This throws an exception if it fails
-          tfListener_.lookupTransform(targetFrame, poseTmp.frame_id_, poseTmp.stamp_, targetFrameTrans);
+          //
+          // JAC: For some reason, the TF corresponding to the GPS stamp is not available at the time the
+          // tranformation is requested. 
+          // See: http://answers.ros.org/question/188046/tf-lookup-would-require-extrapolation-into-the-future/
+          // For now, using a hacked workaround.
+          // TODO: Use waitForTransform and debug further to understand why this is happening
+          //
+          // tfListener_.lookupTransform(targetFrame, poseTmp.frame_id_, poseTmp.stamp_, targetFrameTrans);
+          tfListener_.lookupTransform(targetFrame, poseTmp.frame_id_, ros::Time(0), targetFrameTrans);
         }
         catch (tf::TransformException &ex)
         {
