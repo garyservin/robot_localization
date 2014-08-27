@@ -257,13 +257,13 @@ namespace robot_localization {
     transformGood_ = false;
 
     // Subscribe to the messages we need
-    ros::Subscriber utmSub = nh.subscribe<nav_msgs::Odometry>("gps/gps_utm", 10, 
+    utmSub = nh.subscribe<nav_msgs::Odometry>("gps/gps_utm", 10, 
         boost::bind(&UtmTransform::utmCallback, this, _1));
-    ros::Subscriber imuSub = nh.subscribe<sensor_msgs::Imu>("imu/data", 10, 
+    imuSub = nh.subscribe<sensor_msgs::Imu>("imu/data", 10, 
         boost::bind(&UtmTransform::imuCallback, this, _1));
-    ros::Subscriber odomSub = nh.subscribe<nav_msgs::Odometry>("odometry/filtered", 10, 
+    odomSub = nh.subscribe<nav_msgs::Odometry>("odometry/filtered", 10, 
         boost::bind(&UtmTransform::odomCallback, this, _1));
-    ros::Subscriber gpsFixSub = nh.subscribe<sensor_msgs::NavSatFix>("gps/fix", 10,
+    gpsFixSub = nh.subscribe<sensor_msgs::NavSatFix>("gps/fix", 10,
         boost::bind(&UtmTransform::gpsFixCallback, this, _1));
 
     // Load the parameters we need
