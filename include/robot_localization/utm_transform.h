@@ -136,5 +136,12 @@ namespace robot_localization {
       //! @brief Callback for the GPS fix data
       //!
       void gpsFixCallback(const sensor_msgs::NavSatFixConstPtr& msg);
+
+
+      //! @brief subscribers
+      ros::Subscriber utmSub;
+      ros::Subscriber imuSub;
+      ros::Subscriber odomSub;
+      ros::Subscriber gpsFixSub;
   };
 };
