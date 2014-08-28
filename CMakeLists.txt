@@ -28,13 +28,14 @@ include_directories(include ${catkin_INCLUDE_DIRS} ${Eigen_INCLUDE_DIRS})
 
 add_library(filter_base src/filter_base.cpp)
 add_library(ekf src/ekf.cpp)
-target_link_libraries(ekf filter_base)
+add_library(utm_transform src/utm_transform.cpp)
+target_link_libraries(ekf filter_base utm_transform)
 
 add_executable(ekf_localization_node src/ekf_localization_node.cpp)
-add_executable(utm_transform_node src/utm_transform.cpp src/utm_transform_node.cpp)
+add_executable(utm_transform_node src/utm_transform_node.cpp)
 
 target_link_libraries(ekf_localization_node ekf filter_base ${catkin_LIBRARIES})
-target_link_libraries(utm_transform_node ${catkin_LIBRARIES})
+target_link_libraries(utm_transform_node utm_transform ${catkin_LIBRARIES})
 
 #############
 ## Install ##
