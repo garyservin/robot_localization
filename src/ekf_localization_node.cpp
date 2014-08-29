@@ -40,7 +40,14 @@ int main(int argc, char **argv)
 
   RobotLocalization::RosEkf ekf;
 
-  ekf.run();
+  ros::Rate loop_rate(ekf.getFrequency());
+
+  while (ros::ok())
+  {
+    ekf.run();
+
+    loop_rate.sleep();
+  }
 
   return 0;
 }
