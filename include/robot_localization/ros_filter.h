@@ -78,6 +78,17 @@ namespace RobotLocalization
         // Ensure that anyone who uses this template uses the right
         // kind of template parameter type
         (void) static_cast<FilterBase*>((Filter*) 0);
+
+        ros::Time::init();
+
+        loadParams();
+
+        // Publisher
+        positionPub = nh_.advertise<nav_msgs::Odometry>("odometry/filtered", 20);
+
+        // Clear out the transform
+        tf::transformTFToMsg(tf::Transform::getIdentity(), odomTrans_.transform);
+
       }
 
       ~RosFilter()
@@ -823,25 +834,13 @@ namespace RobotLocalization
         }
       }
 
+      double getFrequency()
+      {
+        return frequency_;
+      }
+
       void run()
       {
-        ros::Time::init();
-
-        loadParams();
-
-        // Clear out the transform
-        tf::transformTFToMsg(tf::Transform::getIdentity(), odomTrans_.transform);
-
-        // Publisher
-        ros::Publisher positionPub = nh_.advertise<nav_msgs::Odometry>("odometry/filtered", 20);
-        tf::TransformBroadcaster odomTransformBroadcaster;
-
-        ros::Rate loop_rate(frequency_);
-
-        std::map<std::string, Eigen::VectorXd> postUpdateStates;
-
-        while (ros::ok())
-        {
           // Get latest state and publish it
           nav_msgs::Odometry filteredPosition;
 
@@ -886,8 +885,6 @@ namespace RobotLocalization
             previousStates_[mapIt->first] = trans;
           }
 
-          loop_rate.sleep();
-        }
       }
 
     protected:
@@ -1490,6 +1487,11 @@ namespace RobotLocalization
       //!
       std::ofstream debugStream_;
 
+      // Publisher
+      ros::Publisher positionPub;
+      tf::TransformBroadcaster odomTransformBroadcaster;
+
+      std::map<std::string, Eigen::VectorXd> postUpdateStates;
   };
 }
 
