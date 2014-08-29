@@ -29,7 +29,9 @@ include_directories(include ${catkin_INCLUDE_DIRS} ${Eigen_INCLUDE_DIRS})
 add_library(filter_base src/filter_base.cpp)
 add_library(ekf src/ekf.cpp)
 add_library(utm_transform src/utm_transform.cpp)
+add_library(ros_filter include/robot_localization/ros_filter.h)
 target_link_libraries(ekf filter_base utm_transform)
+set_target_properties(ros_filter PROPERTIES LINKER_LANGUAGE CXX)
 
 add_executable(ekf_localization_node src/ekf_localization_node.cpp)
 add_executable(utm_transform_node src/utm_transform_node.cpp)
@@ -52,7 +54,7 @@ target_link_libraries(utm_transform_node utm_transform ${catkin_LIBRARIES})
 # )
 
 ## Mark executables and/or libraries for installation
-install(TARGETS filter_base ekf ekf_localization_node utm_transform_node
+install(TARGETS filter_base ekf ekf_localization_node utm_transform_node ros_filter
   ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
   LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
   RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION})
