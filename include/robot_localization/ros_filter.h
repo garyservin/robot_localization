@@ -51,6 +51,14 @@
 
 #include <fstream>
 
+#include <android/log.h>
+void blog(const char *msg, ...) {
+    va_list args;
+    va_start(args, msg);
+    __android_log_vprint(ANDROID_LOG_INFO, "EKF_OBJ_ANDROID", msg, args);
+    va_end(args);
+}
+
 // Handy methods for debug output
 std::ostream& operator<<(std::ostream& os, const tf::Transform &trans)
 {
@@ -77,17 +85,23 @@ namespace RobotLocalization
       {
         // Ensure that anyone who uses this template uses the right
         // kind of template parameter type
+        blog("ekf: efore static_cast");
         (void) static_cast<FilterBase*>((Filter*) 0);
+        blog("ekf: after static_cast");
 
         ros::Time::init();
+        blog("ekf: after Time::init()");
 
         loadParams();
+        blog("ekf: after loadParams()");
 
         // Publisher
         positionPub = nh_.advertise<nav_msgs::Odometry>("odometry/filtered", 20);
+        blog("ekf: after publisher");
 
         // Clear out the transform
         tf::transformTFToMsg(tf::Transform::getIdentity(), odomTrans_.transform);
+        blog("ekf: after clearing out tf()");
 
       }
 
