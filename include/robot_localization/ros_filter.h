@@ -844,46 +844,74 @@ namespace RobotLocalization
           // Get latest state and publish it
           nav_msgs::Odometry filteredPosition;
 
+          ROS_INFO_NAMED(baseLinkFrameName_, "Before if");
+
           if (getFilteredOdometryMessage(filteredPosition))
           {
+            ROS_INFO_NAMED(baseLinkFrameName_, "1");
             odomTrans_.header.stamp = filteredPosition.header.stamp;
+            ROS_INFO_NAMED(baseLinkFrameName_, "2");
             odomTrans_.header.frame_id = filteredPosition.header.frame_id;
+            ROS_INFO_NAMED(baseLinkFrameName_, "3");
             odomTrans_.child_frame_id = filteredPosition.child_frame_id;
+            ROS_INFO_NAMED(baseLinkFrameName_, "4");
 
             odomTrans_.transform.translation.x = filteredPosition.pose.pose.position.x;
+            ROS_INFO_NAMED(baseLinkFrameName_, "5");
             odomTrans_.transform.translation.y = filteredPosition.pose.pose.position.y;
+            ROS_INFO_NAMED(baseLinkFrameName_, "6");
             odomTrans_.transform.translation.z = filteredPosition.pose.pose.position.z;
+            ROS_INFO_NAMED(baseLinkFrameName_, "7");
             odomTrans_.transform.rotation = filteredPosition.pose.pose.orientation;
+            ROS_INFO_NAMED(baseLinkFrameName_, "8");
 
             // Fire off the position and the transform
             positionPub.publish(filteredPosition);
+            ROS_INFO_NAMED(baseLinkFrameName_, "9");
             odomTransformBroadcaster.sendTransform(odomTrans_);
+            ROS_INFO_NAMED(baseLinkFrameName_, "10");
           }
+
+            ROS_INFO_NAMED(baseLinkFrameName_, "After if");
 
           // The spin will enqueue all the available callbacks
           ros::spinOnce();
+
+            ROS_INFO_NAMED(baseLinkFrameName_, "After spinonce");
 
           // Now we'll integrate any measurements we've received
           filter_.integrateMeasurements(ros::Time::now().toSec(),
                                         postUpdateStates);
 
+            ROS_INFO_NAMED(baseLinkFrameName_, "After integrate measurements");
+
           // Now copy the post-update states into our local
           // copies
           std::map<std::string, Eigen::VectorXd>::iterator mapIt;
 
+            ROS_INFO_NAMED(baseLinkFrameName_, "Aftercreating iterator");
+
           for(mapIt = postUpdateStates.begin(); mapIt != postUpdateStates.end(); ++mapIt)
           {
+            ROS_INFO_NAMED(baseLinkFrameName_, "11");
             tf::Transform trans;
+            ROS_INFO_NAMED(baseLinkFrameName_, "12");
             trans.setOrigin(tf::Vector3(mapIt->second(StateMemberX),
                                         mapIt->second(StateMemberY),
                                         mapIt->second(StateMemberZ)));
+            ROS_INFO_NAMED(baseLinkFrameName_, "13");
             tf::Quaternion quat;
+            ROS_INFO_NAMED(baseLinkFrameName_, "14");
             quat.setRPY(mapIt->second(StateMemberRoll),
                         mapIt->second(StateMemberPitch),
                         mapIt->second(StateMemberYaw));
+            ROS_INFO_NAMED(baseLinkFrameName_, "15");
             trans.setRotation(quat);
+            ROS_INFO_NAMED(baseLinkFrameName_, "16");
             previousStates_[mapIt->first] = trans;
           }
+
+            ROS_INFO_NAMED(baseLinkFrameName_, "After for");
 
       }
 
