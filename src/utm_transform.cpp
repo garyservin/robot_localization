@@ -162,6 +162,11 @@ namespace robot_localization {
   //!
   void UtmTransform::utmCallback(const nav_msgs::OdometryConstPtr& msg)
   {
+    //HACK [tulku] - Always asume 0 altitude when transforming utm to nav.
+    nav_msgs::Odometry hack;
+    hack = *msg;
+    hack.pose.pose.position.z = 0;
+
     if(latestUtmMsg_ == NULL)
     {
       ROS_INFO("Received initial UTM message");
@@ -169,7 +174,7 @@ namespace robot_localization {
       latestUtmMsg_ = new nav_msgs::Odometry();
     }
 
-    *latestUtmMsg_ = *msg;
+    *latestUtmMsg_ = hack;
 
     if(zeroAltitude_ && odomUtmTransform_ != NULL)
     {
@@ -177,7 +182,7 @@ namespace robot_localization {
       // in the original UTM transform, and then put it back
       // together.
       tf::Vector3 origin = originalUtmPose_.getOrigin();
-      origin.setZ(msg->pose.pose.position.z);
+      origin.setZ(hack.pose.pose.position.z);
       originalUtmPose_.setOrigin(origin);
 
       odomUtmTransform_->mult(originalOdomPose_, originalUtmPose_.inverse());
